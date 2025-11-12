@@ -1,0 +1,73 @@
+accessLogs:
+  enabled: true
+  format: json
+
+ports:
+  traefik:
+    port: 9000
+    expose:
+      enabled: false
+  web:
+    port: 8000
+    expose:
+      enabled: true
+      port: 80
+  websecure:
+    port: 8443
+    expose:
+      enabled: true
+      port: 443
+    tls:
+      enabled: true
+
+# EntryPoints configuration replaces redirectTo
+entryPoints:
+  web:
+    address: ":8000"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: ":8443"
+    http:
+      tls:
+        options: "kube-system-secure-tls@kubernetescrd"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+additionalArguments:
+  - "--serverstransport.insecureSkipVerify=false"
+
+metrics:
+  prometheus:
+    enabled: true
+    entryPoint: metrics
+
+replicas: 2
+
+service:
+  type: LoadBalancer
+  spec:
+    externalTrafficPolicy: Local
