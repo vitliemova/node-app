@@ -59,6 +59,8 @@ resources:
 
 additionalArguments:
   - "--serverstransport.insecureSkipVerify=false"
+  - "--global.checknewversion=false"
+  - "--global.sendanonymoususage=false"
 
 metrics:
   prometheus:
