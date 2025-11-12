@@ -14,7 +14,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t desi-php:${{ github.run_number }} .
+        #run: docker build -t desi-php:${{ github.run_number }} .
+        run: docker build -t desi-php:0.02 .
 
       # Login to Docker Hub (or GitHub Container Registry)
       - name: Login to Docker Registry
@@ -25,7 +26,8 @@ jobs:
 
       - name: Tag and Push image
         run: |
-          docker tag desi-php:${{ github.run_number }} desradeva/desi-php-web-server:${{ github.run_number }}
-          docker push desradeva/desi-php-web-server:${{ github.run_number }}
-          docker tag desi-php:${{ github.run_number }} desradeva/desi-php-web-server:latest
-          docker push desradeva/desi-php-web-server:latest
+          docker tag desi-php:0.02 desradeva/desi-php-web-server:0.02
+          docker push desradeva/desi-php-web-server:0.02
+          # docker tag desi-php:${{ github.run_number }} desradeva/desi-php-web-server:latest
+          # docker push desradeva/desi-php-web-server:latest
+
