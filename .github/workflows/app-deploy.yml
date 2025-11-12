@@ -1,0 +1,31 @@
+name: app deploy
+on:
+  push:
+    paths:
+      - "html/index.php"
+      - "Dockerfile"
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted   # 👈 your server runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t desi-php:${{ github.run_number }} .
+
+      # Login to Docker Hub (or GitHub Container Registry)
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Tag and Push image
+        run: |
+          docker tag desi-php:${{ github.run_number }} desradeva/desi-php-web-server:${{ github.run_number }}
+          docker push desradeva/desi-php-web-server:${{ github.run_number }}
+          docker tag desi-php:${{ github.run_number }} desradeva/desi-php-web-server:latest
+          docker push desradeva/desi-php-web-server:latest
