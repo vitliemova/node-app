@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: appa-pod
+spec:
+  containers:
+  - name: appa-container
+    image: desradeva/desi-php-web-server:0.01
+    ports:
+    - containerPort: 80
